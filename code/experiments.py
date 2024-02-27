@@ -489,16 +489,16 @@ if __name__ == '__main__':
 
     groundtruth_adj, features, labels = data.adj, data.features, data.labels
     
-    idx_train_str = open(f"{dataset}_data/training_nodes.txt").readlines()
+    idx_train_str = open(f"../data/{dataset}_data/training_nodes.txt").readlines()
     idx_train =  [eval(i) for i in idx_train_str]
 
-    idx_test_str = open(f"{dataset}_data/testing_nodes.txt").readlines()
+    idx_test_str = open(f"../data/{dataset}_data/testing_nodes.txt").readlines()
     idx_test =  [eval(i) for i in idx_test_str]
     
-    idx_val_str = open(f"{dataset}_data/eval_nodes.txt").readlines()
+    idx_val_str = open(f"../data/{dataset}_data/eval_nodes.txt").readlines()
     idx_val =  [eval(i) for i in idx_val_str]
 
-    attacked_nodes_str = open(f"{dataset}_data/attacked_nodes.txt").readlines()
+    attacked_nodes_str = open(f"../data/{dataset}_data/attacked_nodes.txt").readlines()
     attacked_nodes =  [eval(i) for i in attacked_nodes_str]
 
     q1 = 0
@@ -506,7 +506,7 @@ if __name__ == '__main__':
     q3 = 1 - args.proportion
 
     density = 1
-    results_path = args.expe_name
+    results_path = "../results/"+args.expe_name
 
     if not os.path.exists(results_path):
         os.makedirs(results_path)    

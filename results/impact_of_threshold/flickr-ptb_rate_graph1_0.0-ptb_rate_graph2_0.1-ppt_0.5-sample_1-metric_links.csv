@@ -1,0 +1,2 @@
+run,threshold,attack,setting,metric,object,alpha,accuracy_graph1,accuracy_graph2,attack_dur_graph1,attack_dur_graph2,defense_dur_graph1,defense_dur_graph2,train_dur_graph1,train_dur_graph2,TP_graph1,TP_graph2,FP_graph1,FP_graph2
+0,None,None,None,None,None,0.5759075907590759,0.5836633663366336,None,None,None,None,None,None,None,None,None,None
