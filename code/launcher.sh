@@ -1,5 +1,7 @@
+python_exe=python3.9
+
 # Experiments for impact of threshold
-python3.9 experiments.py --dataset flickr --nbr_exp 10 --attack dice fgsm nettack --proportion 0.5 --thresholds 0 1000 10 --ptb_rate_graph1 0.0 --ptb_rate_graph2 0.1 --expe_name impact_of_threshold
+$python_exe experiments.py --dataset flickr --nbr_exp 10 --attack dice fgsm nettack --proportion 0.5 --thresholds 0 1000 10 --ptb_rate_graph1 0.0 --ptb_rate_graph2 0.1 --expe_name impact_of_threshold
 
 
 

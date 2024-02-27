@@ -57,52 +57,48 @@ class LocalCNGCN():
 
         removed_cnt = 0
 
-        with open("new_metric_scores.csv", "a") as f:
 
-            for edge in edges:
-                n1 = edge[0]
-                n2 = edge[1]
-                if n1 > n2:
-                    continue
+        for edge in edges:
+            n1 = edge[0]
+            n2 = edge[1]
+            if n1 > n2:
+                continue
 
-                if metric == 'neighbors':
-                    score = self._cn_similarity(np_adj[n1], np_adj[n2])
+            if metric == 'neighbors':
+                score = self._cn_similarity(np_adj[n1], np_adj[n2])
 
-                if metric == 'cosine':
-                    score = self._cosine_similarity(np_adj[n1], np_adj[n2])
+            if metric == 'cosine':
+                score = self._cosine_similarity(np_adj[n1], np_adj[n2])
 
-                if metric == 'jaccard':
-                    score = self._jaccard_similarity(np_adj[n1], np_adj[n2])
+            if metric == 'jaccard':
+                score = self._jaccard_similarity(np_adj[n1], np_adj[n2])
 
-                if metric == "adamic_adar":
-                    score = self._adamic_similarity(np_adj, n1, n2)
+            if metric == "adamic_adar":
+                score = self._adamic_similarity(np_adj, n1, n2)
 
-                if metric == "resource_allocation":
-                    score = self._resource_allocation_similarity(np_adj, n1, n2)
+            if metric == "resource_allocation":
+                score = self._resource_allocation_similarity(np_adj, n1, n2)
 
-                if metric == "ccpa":
-                    score = self._ccpa_similarity(np_adj, n1, n2, kwargs['alpha'])
+            if metric == "ccpa":
+                score = self._ccpa_similarity(np_adj, n1, n2, kwargs['alpha'])
 
 
-                f.write(f"{metric},{str(score)}\n")
+            if metric == "neighbors":
+                if score <= threshold:
+                    if adj[n1, n2] == 1:
+                        adj[n1, n2] = 0
+                        adj[n2, n1] = 0
+                        removed_cnt+= 1
 
-                if metric == "neighbors":
-                    if score <= threshold:
-                        if adj[n1, n2] == 1:
-                            adj[n1, n2] = 0
-                            adj[n2, n1] = 0
-                            removed_cnt+= 1
-
-                else:
-                    if score < threshold:
-                        if adj[n1, n2] == 1:
-                            adj[n1, n2] = 0
-                            adj[n2, n1] = 0
-                            removed_cnt+= 1
+            else:
+                if score < threshold:
+                    if adj[n1, n2] == 1:
+                        adj[n1, n2] = 0
+                        adj[n2, n1] = 0
+                        removed_cnt+= 1
 
         print("removed {0} edges".format(removed_cnt))
 
-        f.close()
 
         return adj
     
