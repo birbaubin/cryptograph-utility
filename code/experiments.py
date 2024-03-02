@@ -278,7 +278,7 @@ def run_pipeline(attacks, defenses, perturbation_rate_graph1, perturbation_rate_
     print("*** " + dataset + " 2 ***")
     output2 = test(graph2_adj, idx_test)
     logs_of_defenses_with_attacks.write(
-        "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(run, None, None, None, None, None, output1, output2, 
+        "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(run, None, None, None, None, None, 0, output1, output2, 
                                                                          None, None, None, None, None, None, None,None,None,None))
 
     for attack in attacks:
@@ -321,7 +321,7 @@ def run_pipeline(attacks, defenses, perturbation_rate_graph1, perturbation_rate_
         # sp.save_npz("graph2-attacked.npz", graph2_attacked.tocsr())
 
         logs_of_defenses_with_attacks.write(
-            "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(run, None, attack, None, None, None, output1,
+            "{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}\n".format(run, None, attack, None, None, None, 0,output1,
                                                                  output2, attack_duration1, attack_duration2, None, None, None,None,None,None,None,None))
 
         features1 = features2 = features
