@@ -20,6 +20,7 @@ class LocalCNGCN():
 
         self.gcn = GCN(nfeat, nhid, nclass, dropout, lr, weight_decay, with_relu, with_bias, device=device)
         self.dataset = dataset
+        self.device = device
 
     def fit(self, adj, features, labels, idx_train, threshold, metric="neighbors", object="links", idx_val=None, k=50, train_iters=200,
             initialize=True, verbose=True, **kwargs):
@@ -36,6 +37,7 @@ class LocalCNGCN():
             # print("duration of defense : ", defense_duration, "s")
 
             train_start = time.time()
+            self.gcn = self.gcn.to(self.device)
             self.gcn.fit(features, modified_adj, labels, idx_train, idx_val, train_iters=train_iters,
                         initialize=initialize, verbose=verbose)
             train_end = time.time()
@@ -142,9 +144,6 @@ class LocalCNGCN():
             
 
         return adj
-        
-
-    
 
 
     def _jaccard_similarity(self, a, b):
