@@ -247,7 +247,12 @@ def run_dist_cn_features_defense(adj1, adj2, threshold, metric):
 
 
 # split dataset in two subgraphs
-def split_dataset(groundtruth_adj):
+def split_dataset(groundtruth_adj, proportion):
+
+    q1 = 0
+    q2 = (1 - proportion) / 2
+    q3 = 1 - proportion
+
     graph1_adj = groundtruth_adj.copy()
     graph2_adj = groundtruth_adj.copy()
 
@@ -475,7 +480,7 @@ if __name__ == '__main__':
     svd_k = [i for i in range(5, 51, 5)]
 
     if dataset in ["acm", "cora", "citeseer", "pubmed", "polblogs", "flickr", "blogcatalog"]:
-        data = Dataset(root='/tmp/', name=dataset, seed=seed, setting="gcn")
+        data = Dataset(root="C:\\users\\user1\\Downloads\\", name=dataset, seed=seed, setting="gcn")
         groundtruth_adj, features, labels = data.adj, data.features, data.labels
 
     if dataset == "computers":
@@ -501,9 +506,7 @@ if __name__ == '__main__':
     attacked_nodes_str = open(f"../data/{dataset}_data/attacked_nodes.txt").readlines()
     attacked_nodes =  [eval(i) for i in attacked_nodes_str]
 
-    q1 = 0
-    q2 = (1 - args.proportion) / 2
-    q3 = 1 - args.proportion
+
 
     density = 1
     results_path = "../results/"+args.expe_name
@@ -537,7 +540,7 @@ if __name__ == '__main__':
             "FP_graph2\n")
 
         for run in range(number_of_runs):
-            graph1_adj, graph2_adj = split_dataset(groundtruth_adj)
+            graph1_adj, graph2_adj = split_dataset(groundtruth_adj, args.proportion)
 
             # sp.save_npz("graph1.npz", graph1_adj)
             # sp.save_npz("graph2.npz", graph2_adj)

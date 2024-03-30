@@ -36,6 +36,7 @@ class LocalCNGCN():
             # print("duration of defense : ", defense_duration, "s")
 
             train_start = time.time()
+            self.gcn = self.gcn.to(self.gcn.device)
             self.gcn.fit(features, modified_adj, labels, idx_train, idx_val, train_iters=train_iters,
                         initialize=initialize, verbose=verbose)
             train_end = time.time()
@@ -143,9 +144,6 @@ class LocalCNGCN():
 
         return adj
         
-
-    
-
 
     def _jaccard_similarity(self, a, b):
         intersection =  (a * b).sum()
