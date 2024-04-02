@@ -93,7 +93,7 @@ class LocalCNGCN():
                         removed_cnt+= 1
 
             else:
-                if score < threshold:
+                if score <= threshold:
                     if adj[n1, n2] == 1:
                         adj[n1, n2] = 0
                         adj[n2, n1] = 0
@@ -134,7 +134,7 @@ class LocalCNGCN():
 
             
                 
-            if score < threshold:
+            if score <= threshold:
                     if adj[n1, n2] == 1:
                         adj[n1, n2] = 0
                         adj[n2, n1] = 0

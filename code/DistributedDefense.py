@@ -116,7 +116,7 @@ class TwoPartyCNGCN():
                         adj2[n2, n1] = 0
                         removed_cnt2 += 1
             else:
-                if score < threshold:
+                if score <= threshold:
                     if adj1[n1, n2] == 1:
                         adj1[n1, n2] = 0
                         adj1[n2, n1] = 0
@@ -170,7 +170,7 @@ class TwoPartyCNGCN():
 
             # print(score)
 
-            if score < threshold:
+            if score <= threshold:
                 if adj1[n1, n2] == 1:
                     adj1[n1, n2] = 0
                     adj1[n2, n1] = 0

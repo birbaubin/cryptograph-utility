@@ -462,8 +462,8 @@ if __name__ == '__main__':
     ]
 
     entered_thresholds = args.thresholds
-    neighbors_links_thresholds = [i for i in range(30)]
-    neighbors_features_thresholds = [i for i in range(30)]
+    neighbors_links_thresholds = [i for i in range(5)]
+    neighbors_features_thresholds = [i for i in range(5)]
 
     jaccard_links_thresholds = [i/100 for i in range(entered_thresholds[0], entered_thresholds[1], entered_thresholds[2])]
     # jaccard_links_thresholds = [i/100 for i in range(10)]
@@ -480,7 +480,7 @@ if __name__ == '__main__':
     svd_k = [i for i in range(5, 51, 5)]
 
     if dataset in ["acm", "cora", "citeseer", "pubmed", "polblogs", "flickr", "blogcatalog"]:
-        data = Dataset(root="C:\\users\\user1\\Downloads\\", name=dataset, seed=seed, setting="gcn")
+        data = Dataset(root="/tmp", name=dataset, seed=seed, setting="gcn")
         groundtruth_adj, features, labels = data.adj, data.features, data.labels
 
     if dataset == "computers":
