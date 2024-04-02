@@ -1,0 +1,128 @@
+import networkx as nx
+from deeprobust.graph.data import Dataset
+import numpy as np
+from scipy.sparse import csr_matrix
+
+data = Dataset(root='D:/Docs/UQAM\Memoire/cryptograph/cryptograph-utility/code', name="polblogs", setting="gcn")
+groundtruth_adj, features, labels = data.adj, data.features, data.labels
+
+adjacency_matrix = data.adj
+
+# Create a NetworkX graph from the adjacency matrix
+graph = nx.from_scipy_sparse_array(adjacency_matrix)
+
+# Add labels to the graph
+for node_id, label in enumerate(labels):
+    graph.nodes[node_id]['label'] = label
+print(f"lenght of the labels : {len(labels)}") 
+# Print the number of nodes and edges in the graph
+print(f"Number of total nodes: {graph.number_of_nodes()}")
+print(f"Number of total edges: {graph.number_of_edges()}")
+
+node_id = 5
+budget = 5
+def find_neighbors(graph, node_id):
+    neighbors = list(graph.neighbors(node_id))
+    print(f"number of neighbors of node {node_id}: {len(neighbors)}")
+    print(f"Degree of node {node_id}: {graph.degree[node_id]}")
+    print(f"Neighbors of node {node_id} and their labels:") 
+    for neighbor in neighbors:
+        print(f"Node ID: {neighbor}, Label: {graph.nodes[neighbor]['label']}")
+
+find_neighbors(graph,node_id )
+
+target_node = node_id
+target_label = graph.nodes[target_node]['label']
+print(f"Label of target node {target_node}: {target_label}")
+
+#find the neighbor nodes with opposit label for target_node
+def find_opposit_label_neighbors(graph, target_node, target_label):
+    neighbor_opposit = []
+    for node in graph.neighbors(target_node):
+        if graph.nodes[node]['label'] != target_label:
+            neighbor_opposit.append(node)
+    return neighbor_opposit
+
+neighbor_opposit = find_opposit_label_neighbors(graph, target_node, target_label)
+print(f"number of neighbors with opposit label of target {target_node}: {len(neighbor_opposit)}")
+print(f"neighbor nodes with opposit label of target {target_node} : {neighbor_opposit}")
+
+#find the neighbor nodes with same label for target_node
+def find_same_label_neighbors(graph, target_node, target_label):
+    neighbor_same = []
+    for node in graph.neighbors(target_node):
+        if graph.nodes[node]['label'] == target_label:
+            neighbor_same.append(node)
+    return neighbor_same
+
+neighbor_same = find_same_label_neighbors(graph, target_node, target_label)
+print(f"number of neighbors with same label of target {target_node}: {len(neighbor_same)}")
+print(f"neighbor nodes with same label of target {target_node} : {neighbor_same}")
+
+#find the non_neighbor nodes with opposit label for target_node 
+def find_non_neighbor_opposit_label(graph, target_node, target_label):
+    non_neighbor_opposit = []
+    for node in graph.nodes():
+        if graph.nodes[node]['label'] != target_label and not graph.has_edge(target_node, node):
+            non_neighbor_opposit.append(node)
+    return non_neighbor_opposit
+
+non_neighbor_opposit = find_non_neighbor_opposit_label(graph, target_node, target_label)
+print(f"number of non neighbor nodes with opposit label of target {target_node} : {len(non_neighbor_opposit)}")
+print(f"non neighbor nodes with opposit label of target {target_node} : {non_neighbor_opposit}") 
+
+
+#find the non_neighbor nodes with same label for target_node 
+def find_non_neighbor_same_label(graph, target_node, target_label):
+    non_neighbor_same = []
+    for node in graph.nodes():
+        if graph.nodes[node]['label'] == target_label and not graph.has_edge(target_node, node):
+            non_neighbor_same.append(node)
+    return non_neighbor_same
+
+non_neighbor_same = find_non_neighbor_same_label(graph, target_node, target_label)
+print(f"number of non neighbor nodes with same label of target {target_node} : {len(non_neighbor_same)}")
+print(f"non neighbor nodes with same label of target {target_node} : {non_neighbor_same}") 
+
+#find les y most fort = plus de voisins y et moins de voisin x: at the same time
+# we pass "non_neighbor_opposit" as argument of this:
+
+def find_max_same_min_opposit_label_neighbors(graph, non_neighbor_opposit, budget ):
+    max_same_min_opposit_label_neighbors = []
+    for node in non_neighbor_opposit:
+            num_same_neighbors = sum(1 for neighbor in graph.neighbors(node) if graph.nodes[neighbor]['label'] == graph.nodes[node]['label'])
+            num_opposit_neighbors = sum(1 for neighbor in graph.neighbors(node) if graph.nodes[neighbor]['label'] != graph.nodes[node]['label'])
+
+            p = num_same_neighbors/num_opposit_neighbors if num_opposit_neighbors != 0 else 0
+            # if number of y neighbors are more than x neighbors we accept the node:
+            if p > 1 :
+                max_same_min_opposit_label_neighbors.append((node,num_same_neighbors,p))  
+    max_same_min_opposit_label_neighbors.sort(key=lambda x: x[2], reverse=True)
+    return [(node, p) for node, _ ,p in max_same_min_opposit_label_neighbors[:budget]]
+
+max_same_min_opposit_label_neighbors= find_max_same_min_opposit_label_neighbors(graph, non_neighbor_opposit, budget)
+print(f"nodes with max same label and min opposit label neighbors all over the main graph: {max_same_min_opposit_label_neighbors}")
+
+
+#attack V_0 Mahsa
+def insert_edge(graph, target_node, max_same_min_opposit_label_neighbors): 
+    attacked_graph = graph.copy()
+    for node, _ in max_same_min_opposit_label_neighbors:
+       attacked_graph.add_edge(target_node, node)
+    return attacked_graph
+
+attacked_graph = insert_edge(graph, target_node, max_same_min_opposit_label_neighbors)
+if (attacked_graph.number_of_edges()- graph.number_of_edges()) == budget:
+    print("Attack was successful.... here is an overview from attacked node and graph: ")
+
+find_neighbors(attacked_graph,node_id )
+
+
+def convert(attacked_graph):
+    # Convert the graph to a CSR matrix
+    adjacency_matrix = nx.adjacency_matrix(attacked_graph)
+    # Convert the adjacency matrix to CSR format
+    adjacency_matrix_csr = csr_matrix(adjacency_matrix)
+    return adjacency_matrix_csr
+
+adjacency_matrix_csr = convert(attacked_graph)
