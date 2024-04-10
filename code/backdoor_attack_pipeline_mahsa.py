@@ -1,3 +1,4 @@
+
 import torch
 import numpy as np
 import torch.nn.functional as F
@@ -82,3 +83,5 @@ accuracies = model.test(idx_test)
 #print(f"Test accuracy after attack: {accuracies[1]:.2f}")
 #print(f"Test accuracy after defense: {accuracies[2]:.2f}")
 #print(f"Test accuracy after attack and defense: {accuracies[3]:.2f}")
+
+
