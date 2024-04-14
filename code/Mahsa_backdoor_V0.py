@@ -11,10 +11,12 @@ import pandas as pd #pour lire/ecrire les csv et excel
 
 # initializations for backdoor attack
 def target (graph):
-    target_node = 1
-    budget = 5
+    target_node = 9
+    budget = 200
     target_label = graph.nodes[target_node]['label']
+    print(f"Target node is {target_node} with label {target_label} and budget {budget}")
     return target_node, target_label, budget
+
 
 #find the non_neighbor nodes with opposit label for target_node - needed for backdoor attack
 def find_non_neighbor_opposit_label(graph, target_node, target_label):
