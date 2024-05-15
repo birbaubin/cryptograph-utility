@@ -11,21 +11,21 @@ import pandas as pd #pour lire/ecrire les csv et excel
 
 # initializations for backdoor attack
 def target (graph):
-    target_node = 9
+    target_node = 678
     budget = 200
     target_label = graph.nodes[target_node]['label']
     print(f"Target node is {target_node} with label {target_label} and budget {budget}")
     return target_node, target_label, budget
 
 
-#find the non_neighbor nodes with opposit label for target_node - needed for backdoor attack
-def find_non_neighbor_opposit_label(graph, target_node, target_label):
+#find the non_neighbor nodes with opposit label for target_node -
+def find_non_neighbor_opposit_label(graph, target_node):
     non_neighbor_opposit = []
+    target_label = graph.nodes[target_node]['label']
     for node in graph.nodes():
         if graph.nodes[node]['label'] != target_label and not graph.has_edge(target_node, node):
             non_neighbor_opposit.append(node)
     return non_neighbor_opposit
-
 
 #find les most important opposit lable nodes
 # we pass "non_neighbor_opposit" as argument of this:
@@ -76,9 +76,9 @@ def evaluate_graph(attacked_graph, nodes_for_attack, target_node, budget):
         if attacked_graph.has_edge(node1, node2):
             insert_edge += 1
     if insert_edge == budget:
-        print(f"Edge insertion is successful and {insert_edge} edges has been inserted between {target_node} and : {nodes_for_attack}")
+        print(f"Edge insertion done and {insert_edge} edges has been inserted between {target_node} and : {nodes_for_attack}")
     else:    
-        print(f"Edge insertion is not successful and {insert_edge} edges has been inserted")
+        print(f"Edge insertion failed and {insert_edge} edges has been inserted")
 
 # def evaluate_graph_after_cryptograph(attacked_graph, nodes_for_attack, target_node, budget):
 #     node1 = target_node
