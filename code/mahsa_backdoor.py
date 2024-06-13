@@ -154,10 +154,10 @@ def check_removing(attacked_graph, nodes_for_remove, target_node, budget):
         print(f"Edge removing failed and {remove_edge} edges has been removed")
     # return insert_edge
 
-########################## V1 Mahsa: add and Remove edges ############################
+########################## V3-0 Mahsa: add and Remove edges ############################
 ######################### Analyse the nodes ############################
 # get a dictionary consist of : for each node (key), has the values of numbers of (same_label, opposite_label)
-def count_neighbor_labels(graph, labels):
+def count_neighbor_labels_0(graph, labels):
     count_dict = {} # dictionary type variable with key: node, and value of: (same_label, opposite_label)
     for node in graph.nodes():
         neighbors = list(graph.neighbors(node))
@@ -174,13 +174,6 @@ def sort_classly(count_dict, labels, target_node):
     sorted_nodes_opp = sorted(nodes_class_opp.items(), key=lambda x: x[1][0], reverse=True)
     return sorted_nodes_same, sorted_nodes_opp
 
-# def add_remove(graph, target_node, sorted_nodes_same, sorted_nodes_opp, remove_budget, add_budget):
-#     attacked_graph = graph.copy()
-#     for i in range(remove_budget):
-#         attacked_graph.remove_edge(target_node, sorted_nodes_same[i][0])
-#     for i in range(add_budget):
-#         attacked_graph.add_edge(target_node, sorted_nodes_opp[i][0])
-#     return attacked_graph
 
 def add_remove(graph, target_node, sorted_nodes_same, sorted_nodes_opp, remove_budget, add_budget):
     attacked_graph = graph.copy()
@@ -209,3 +202,50 @@ def add_remove(graph, target_node, sorted_nodes_same, sorted_nodes_opp, remove_b
 
 def is_neighbor(graph, node1, node2):
     return graph.has_edge(node1, node2) or graph.has_edge(node2, node1)
+
+
+
+########################## V3.1 Mahsa: add and Remove edges  (le budget change selon l’importance pour ajouter/enlever) ############################
+######################### Analyse the nodes ############################
+# get a dictionary consist of : for each node (key), has the values of numbers of (same_label, opposite_label)
+def count_neighbor_labels(graph, labels):
+    count_dict = {} # dictionary type variable with key: node, and value of: (same_label, opposite_label)
+    for node in graph.nodes():
+        neighbors = list(graph.neighbors(node))
+        same_label = sum(labels[neighbor] == labels[node] for neighbor in neighbors)
+        opposite_label = len(neighbors) - same_label
+        count_dict[node] = (same_label, opposite_label)
+    sorted_count_dict = sorted(count_dict.items(), key=lambda x: x[1][0], reverse=True)
+    return sorted_count_dict
+
+
+def add_remove_v3(graph, target_node, sorted_count_dict, budget):
+    removed_edges = []
+    added_edges = []
+    target_label = graph.nodes[target_node]['label']
+    i = 0
+    while (len(removed_edges) + len(added_edges) < budget) and i < len(sorted_count_dict):
+        node, _ = sorted_count_dict[i]
+        sorted_node_label = graph.nodes[node]['label']
+        edge = (target_node, node)
+        # If neighbor and same label, remove edge
+        if graph.has_edge(*edge):
+            if sorted_node_label == target_label:
+                graph.remove_edge(*edge)
+                removed_edges.append(edge)
+                print(f"node {node} with label of {sorted_node_label} is same label neighbor and has been removed.")
+            # If opposite label, do nothing
+            else:
+                print(f"node {node} with label of {sorted_node_label} is opposite label neighbor and we do nothing.")
+        else:  # If not neighbor
+            if sorted_node_label != target_label:
+                graph.add_edge(*edge)
+                added_edges.append(edge)
+                print(f"node {node} with label of {sorted_node_label} is opposite label Non-neighbor and has been added.")
+            # If same label, do nothing
+            else:
+                print(f"node {node} with label of {sorted_node_label} is same label Non-neighbor and we do nothing.")
+        i += 1
+    return graph, removed_edges, added_edges
+
+
